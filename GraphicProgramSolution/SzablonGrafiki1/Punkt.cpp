@@ -50,10 +50,12 @@ void Punkt::usun()
 {
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
+	glDeleteProgram(rendering_program);
 }
 
 void Punkt::stworzenieVAO()
 {
+	rendering_program = compile_shaders(); //kompilacja shadera
 	glGenVertexArrays(1, &VAO); //dzia³a jak glGenBuffers, ale na wierzcho³ki, zapamietuje wszystkie vbo oraz ich layaut
 	std::cout << "VAO: " << VAO << std::endl;
 	glBindVertexArray(VAO); //uaktywanie wierzcho³ki
@@ -87,53 +89,61 @@ void Punkt::stworzenieVBO() //tworzy obiekty buffora oraz definiuje jego zawarto
 	std::cout << "VBO: " << VBO << std::endl;
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Wierzcholki), Wierzcholki, GL_STATIC_DRAW); //podajemy rozmiar, tablice, i co chcemy z tymi wierzcho³kami zrobiæ
 
-
-	//vbo do kolorowania obiektu
-
-	GLfloat color[90] = { }; //RGB Alpha
-
-	for (int i = 0; i < 90; i++) { 
-		color[i] = 1.0f;
-	}
-
-	glGenBuffers(1, &colorBufferId);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBufferId);
-	std::cout << "VBO: " << VBO << std::endl;
-	glBufferData(GL_ARRAY_BUFFER, sizeof(color), color, GL_STATIC_DRAW);
-
-
-
-
 }
 
+GLuint Punkt::compile_shaders(void)
+{
+	GLuint fragment_shader;
+	GLuint program;
 
+
+	// Kod Ÿród³owy shadera fragmentów.
+	static const GLchar * fragment_shader_source[] =
+	{
+		"#version 450 core \n"
+		" \n"
+		"out vec4 color; \n"
+		" \n"
+		"void main(void) \n"
+		"{ \n"
+		" color = vec4(1.0f, 1.0f, 1.0f, 1.0f); \n"
+		"} \n"
+	};
+
+	// Utworzenie i kompilacja shadera fragmentów.
+	fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragment_shader, 1, fragment_shader_source, NULL);
+	glCompileShader(fragment_shader);
+
+	// Utworzenie programu, dodanie shadera
+	program = glCreateProgram();
+	
+	glAttachShader(program, fragment_shader);
+	glLinkProgram(program);
+	// Usuniêcie shadera, bo znajduj¹ siê ju¿ w programie.
+	
+	glDeleteShader(fragment_shader);
+
+		return program;
+
+}
 void  Punkt::wyswietl()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glColor3f(0.5f, 0.0f, 1.0f);
-	//const GLfloat color[] = { 1.0f, 1.0f ,1.0f, 1.0f }; //RGB ALPHA
-	//glClearBufferfv(GL_COLOR, 0, color);
-	//glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
 	glEnableVertexAttribArray(0); //uaktywniamy index
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //po kolei: indeks, ile wymiarów, typ danych, normalizacja
-	//glColorPointer(3, GL_FLOAT, 0, 0);
 	glPointSize(wielkoscPunktu);
 	
-
-	//glEnableVertexAttribArray(1);
-	//glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	glUseProgram(rendering_program); //u¿ycie shadera fragmentow do pokolorowania
 
 	glDrawArrays(GL_POINTS, 0, 30); //co chcemy rysowac (punkty), index poczatkowy w wlaczonych tablicach
 								   //liczba indexow do renderowania
-	//glDrawArraysInstanced(GL_POINTS, i, 1, 2);
-
-
-	
 
 	glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
-
+	
 	glutSwapBuffers();
 }
 

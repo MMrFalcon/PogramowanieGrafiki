@@ -11,8 +11,7 @@
 GLuint VAO;
 GLuint VBO;
 GLuint wielkoscPunktu = 10;
-GLuint colorBufferId;
-
+GLuint rendering_program;
 class Punkt
 {
 private:
@@ -32,6 +31,7 @@ public:
 	void stworzenieVAO();
 	void stworzenieVBO();
 	void sprawdzenieWersji();
+	GLuint compile_shaders(void);
 };
 
 #endif /* PUNKT_H */
