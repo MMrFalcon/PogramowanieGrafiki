@@ -11,7 +11,6 @@
 GLuint VAO;
 GLuint VBO;
 GLuint EBO; 
-GLuint wielkoscKwadratu = 10;
 GLuint rendering_program;
 class Kwadrat
 {

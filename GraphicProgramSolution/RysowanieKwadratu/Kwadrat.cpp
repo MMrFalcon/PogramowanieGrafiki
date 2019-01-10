@@ -96,7 +96,6 @@ void  Kwadrat::wyswietl()
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0); //po kolei: indeks, ile wymiarów, typ danych, normalizacja
-	glPointSize(wielkoscKwadratu);
 
 	glUseProgram(rendering_program); //u¿ycie shadera fragmentow do pokolorowania
 
