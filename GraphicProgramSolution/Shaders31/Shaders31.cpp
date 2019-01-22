@@ -101,6 +101,8 @@ void Shaders::stworzenieProgramu()
 	}
 
 	//jako ze jest mnozone przez 0,5 to do polozenia x dodaje 2.0 - gdyby nie bylo mnozenia to bym dodal do x 1.0
+	//dodawanie komentarzy niemozliwe "//" psuje program brak komunikatow o bledzie podczas kompilacji shadera
+	//tylko niektore logi sa zbierane np glGetProgramInfoLog() zbiera o kompilacji shadera jesli uzyjemy czegos czego niepowinnismy
 	static const GLchar *  vertexShader = {
 		"	#version 330 core\n																	\
 			in layout(location=0) vec3 polozenie;												\
